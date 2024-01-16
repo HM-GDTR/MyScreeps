@@ -1,4 +1,5 @@
 import { ErrorMapper } from "utils/ErrorMapper";
+import { LEVEL, Logger } from "utils/Logger";
 
 declare global {
   /*
@@ -24,7 +25,7 @@ declare global {
   // Syntax for adding proprties to `global` (ex "global.log")
   namespace NodeJS {
     interface Global {
-      log: any;
+      log: Logger;
     }
   }
 }
@@ -33,6 +34,10 @@ declare global {
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
   console.log(`Current game tick is ${Game.time}`);
+  if(global.log == null) {
+    global.log = new Logger(LEVEL.LEVEL_INFO);
+    global.log.info('global.log reload.')
+  }
 
   // Automatically delete memory of missing creeps
   for (const name in Memory.creeps) {
